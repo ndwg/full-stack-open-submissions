@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import personService from './services/persons'
 
 const Filter = ({filter, filterFunction}) => {
   return(
@@ -53,10 +53,10 @@ const App = () => {
   const [newFilter, setNewFilter] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
+    personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
       })
   }, [])
 
@@ -75,19 +75,41 @@ const App = () => {
   const addNumber = (event) => {
     event.preventDefault()
 
-    if(persons.findIndex((n) => n.name == newName) >= 0){
-      alert(`${newName} is already added to phonebook`)
+    const personIndex = persons.findIndex((n) => n.name == newName)
+
+    if(personIndex >= 0){
+      const oldPerson = persons[personIndex];
+      if(confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){
+        personService
+          .update(oldPerson.id, {...oldPerson, number: newPhone})
+          .then(returnedPerson => {
+            setPersons(persons.map(person => person.id !== oldPerson.id? person: returnedPerson))
+            setNewName('')
+            setNewPhone('')
+          })
+      }
       return
-    } 
+    }
 
     const nameObject = {
       name: newName,
       number: newPhone
     }
 
-    setPersons(persons.concat(nameObject))
-    setNewName('')
-    setNewPhone('')
+    personService
+      .create(nameObject)
+      .then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson))
+        setNewName('')
+        setNewPhone('')
+      })
+  }
+
+  const deleteNumber = (person) => {
+    if(confirm(`Delete ${person.name}?`)){
+      personService.destroy(person.id)
+      setPersons(persons.filter((p) => p.id!=person.id))
+    }
   }
 
   const personsFinal = newFilter.length === 0?
@@ -102,7 +124,14 @@ const App = () => {
       <Form addFunction={addNumber} newName={newName} handleSetName={handleSetName} newPhone={newPhone} handleSetNumber={handleSetNumber}/>
       <h3>Numbers</h3>
       {personsFinal.map(person => 
-        <p key={person.name}>{person.name} {person.number}</p>
+        <div>
+          <span key={person.name}>{person.name} {person.number}</span>
+          <button 
+            key={`${person.name}num`}
+            onClick={() => deleteNumber(person)}>
+              Delete
+          </button>
+        </div>
         )}
     </div>
   )

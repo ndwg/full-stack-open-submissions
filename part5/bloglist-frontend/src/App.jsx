@@ -1,23 +1,24 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [newTitle, setNewTitle] = useState('')
-  const [newAuthor, setNewAuthor] = useState('')
-  const [newURL, setNewURL] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
+  const blogFormRef = useRef()
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+      setBlogs( blogs.sort((a,b) => b.likes - a.likes) )
+    )
   }, [])
 
   useEffect(() => {
@@ -29,17 +30,10 @@ const App = () => {
     }
   }, [])
 
-  const addBlog = (event) => {
-    event.preventDefault()
-    const blogObject = {
-      title: newTitle,
-      author: newAuthor,
-      url: newURL,
-      likes: 0,
-      user: user._id
-    }
+  const addBlog = (blogObject) => {
+    blogFormRef.current.toggleVisibility()
 
-    setErrorMessage(`new blog ${newTitle} by ${newAuthor} added`)
+    setErrorMessage(`new blog ${blogObject.title} by ${blogObject.author} added`)
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
@@ -48,20 +42,48 @@ const App = () => {
       .create(blogObject)
         .then(returnedBlog => {
         setBlogs(blogs.concat(returnedBlog))
-        setNewTitle('')
-        setNewAuthor('')
-        setNewURL('')
       })
   }
 
-  const handleTitleChange = (event) => {
-    setNewTitle(event.target.value)
+  const updateLikes = id => {
+    const blog = blogs.find(n => n.id === id)
+    const changedBlog = { ...blog, likes: blog.likes+1 }
+  
+    blogService
+      .update(id, changedBlog)
+        .then(returnedBlog => {
+          const editBlog = {...returnedBlog, user: blog.user}
+        setBlogs(blogs.map(blog => blog.id !== id ? blog : editBlog))
+      })
+      .catch(() => {
+        setErrorMessage(
+          `Blog '${blog.title}' was already removed from server`
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+      })
   }
-  const handleAuthorChange = (event) => {
-    setNewAuthor(event.target.value)
-  }
-  const handleURLChange = (event) => {
-    setNewURL(event.target.value)
+
+  const removeBlog = id => {
+    const blog = blogs.find(n => n.id === id)
+
+    if(window.confirm(`Remove blog ${blog.title} by ${blog.author}`)){
+
+    blogService
+      .remove(id)
+        .then(()=>{
+        setBlogs(blogs.filter(blog => blog.id !== id))
+      })
+      .catch(() => {
+        setErrorMessage(
+          `Blog '${blog.title}' was already removed from server`
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+      })
+    }
   }
 
   const handleLogin = async (event) => {
@@ -89,7 +111,7 @@ const App = () => {
     console.log('logging in with', username, password)
   }
 
-  const handleLogout = async (event) =>{
+  const handleLogout = async () =>{
     window.localStorage.removeItem('loggedBlogappUser');
   }
 
@@ -135,33 +157,11 @@ const App = () => {
       <p>{user.name} logged in</p>
       <button onClick={handleLogout}>logout</button>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} user={user} updateLikes={()=>updateLikes(blog.id)} removeBlog={()=>removeBlog(blog.id)}/>
       )}
-      <h2>create new</h2>
-      <form onSubmit={addBlog}>
-      <div>
-        title: 
-        <input
-          value={newTitle}
-          onChange={handleTitleChange}
-        />
-      </div>
-      <div>
-        author: 
-        <input
-          value={newAuthor}
-          onChange={handleAuthorChange}
-        />
-      </div>
-      <div>
-        url: 
-        <input
-          value={newURL}
-          onChange={handleURLChange}
-        />
-      </div>
-        <button type="submit">save</button>
-      </form>
+      <Togglable buttonLabel='new blog' ref={blogFormRef}>
+        <BlogForm createBlog={addBlog} user={user}/>
+      </Togglable>
     </div>
   )
 }

@@ -36,7 +36,7 @@ const App = () => {
     setErrorMessage(`new blog ${blogObject.title} by ${blogObject.author} added`)
       setTimeout(() => {
         setErrorMessage(null)
-      }, 5000)
+      }, 2000)
   
     blogService
       .create(blogObject)
@@ -61,7 +61,7 @@ const App = () => {
         )
         setTimeout(() => {
           setErrorMessage(null)
-        }, 5000)
+        }, 2000)
       })
   }
 
@@ -81,7 +81,7 @@ const App = () => {
         )
         setTimeout(() => {
           setErrorMessage(null)
-        }, 5000)
+        }, 2000)
       })
     }
   }
@@ -121,6 +121,7 @@ const App = () => {
         username
           <input
           type="text"
+          data-testid='username'
           value={username}
           name="Username"
           onChange={({ target }) => setUsername(target.value)}
@@ -130,6 +131,7 @@ const App = () => {
         password
           <input
           type="password"
+          data-testid='password'
           value={password}
           name="Password"
           onChange={({ target }) => setPassword(target.value)}

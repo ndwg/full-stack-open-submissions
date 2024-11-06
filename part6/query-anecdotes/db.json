@@ -1,0 +1,64 @@
+{
+  "anecdotes": [
+    {
+      "content": "The early bird gets the worm.",
+      "votes": 5,
+      "id": "BTvO1NL"
+    },
+    {
+      "content": "Making anecdotes is like making pancakes.",
+      "votes": 13,
+      "id": "Ng8JY1-"
+    },
+    {
+      "content": "Pressure makes diamonds.",
+      "votes": 5,
+      "id": "6_BH2OZ"
+    },
+    {
+      "content": "Practice makes perfect.",
+      "votes": 2,
+      "id": "ysasl2s"
+    },
+    {
+      "content": "If life gives you lemons, make lemonade.",
+      "votes": 2,
+      "id": "tg76QAe"
+    },
+    {
+      "content": "You can't make an omelet without breaking a few eggs.",
+      "votes": 1,
+      "id": "XwOrhsk"
+    },
+    {
+      "content": "A rolling stone gathers no moss.",
+      "votes": 1,
+      "id": "mKYHIPT"
+    },
+    {
+      "content": "The devil is in the details.",
+      "votes": 1,
+      "id": "0qwMyNX"
+    },
+    {
+      "content": "Beggars cannot be choosers.",
+      "votes": 1,
+      "id": "6CdrPry"
+    },
+    {
+      "content": "tersd",
+      "votes": 0,
+      "id": "FPe-1d7"
+    },
+    {
+      "content": "test test test testy",
+      "votes": 0,
+      "id": "I1nd5qc"
+    },
+    {
+      "content": "one for the road",
+      "votes": 1,
+      "id": "p8LapVH"
+    }
+  ]
+}

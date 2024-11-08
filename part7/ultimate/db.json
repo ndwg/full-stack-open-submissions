@@ -1,0 +1,66 @@
+{
+  "notes": [
+    {
+      "id": 1,
+      "content": "custom-hooks are awesome!"
+    },
+    {
+      "id": 2,
+      "content": "best feature ever <3"
+    },
+    {
+      "content": "testing",
+      "id": 3
+    },
+    {
+      "content": "does this work?",
+      "id": 4
+    },
+    {
+      "content": "does this work now?",
+      "id": 5
+    },
+    {
+      "content": "what was that error again?",
+      "id": 6
+    },
+    {
+      "content": "please work",
+      "id": 7
+    },
+    {
+      "content": "now it must work",
+      "id": 8
+    },
+    {
+      "content": "finally!",
+      "id": 9
+    },
+    {
+      "content": "let's go!!",
+      "id": 10
+    }
+  ],
+  "persons": [
+    {
+      "id": 1,
+      "name": "mluukkai",
+      "number": "040-5483923"
+    },
+    {
+      "id": 2,
+      "name": "hellas",
+      "number": "012-123123"
+    },
+    {
+      "name": "johnny",
+      "number": "403-2425345643",
+      "id": 3
+    },
+    {
+      "name": "pam",
+      "number": "127-3495839",
+      "id": 4
+    }
+  ]
+}
